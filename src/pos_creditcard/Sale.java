@@ -1,6 +1,6 @@
 package pos_creditcard;
 
-
+import java.util.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -30,7 +30,8 @@ public class Sale {
     saleLineItems.add(new SaleLineItem(productSpecification, quantity));
   }
 
-  private double total() {
+  // Hacemos público total() para que PointOfSale pueda usarlo */
+  public double total() {
     double total = 0.;
     for (SaleLineItem saleLineItem : saleLineItems) {
       total += saleLineItem.subtotal();
@@ -62,9 +63,20 @@ public class Sale {
     System.out.printf("Total %.2f\n", total);
   }
 
-  public void payCash(double amountHanded) {
+  public void payCash(Map<Double, Integer> moneyHanded, CashBox cashBox, ChangeMaker changeMaker) {
     assert !isPaid : "sale " + id + " has already been paid";
-    payment = new PaymentInCash(amountHanded, total());
+
+    double totalToPay = total();
+    double amountHanded = 0.0;
+
+    //Calculamos cuanto dinero ha entregado el cliente
+    for (var entry: moneyHanded.entrySet()) {
+        amountHanded += entry.getValue() * entry.getValue();
+    }
+
+    PaymentInCash paymentInCash = new PaymentInCash(amountHanded, totalToPay, cashBox, changeMaker);
+    paymentInCash.processPayment(moneyHanded);
+    payment = paymentInCash;
     isPaid = true;
   }
 

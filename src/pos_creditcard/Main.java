@@ -1,5 +1,6 @@
 package pos_creditcard;
 
+import java.util.*;
 public class Main {
   public static void main(String[] args) {
     PointOfSale pointOfSale = new PointOfSale();
@@ -17,8 +18,9 @@ public class Main {
     //Coca-cola 3 x 1.2 = 3.6
     //Total 11.2
     pointOfSale.printReceiptOfSale(idSale);
-    double handedAmount = 20.;
-    pointOfSale.payOneSaleCash(idSale, handedAmount);
+    Map<Double, Integer> moneyHanded = new LinkedHashMap<>();
+    moneyHanded.put(10.0, 2);
+    pointOfSale.payOneSaleCash(idSale, moneyHanded);
     pointOfSale.printPayment(idSale);
     System.out.println("---------------------------------");
     int idSale2 = pointOfSale.makeNewSale();

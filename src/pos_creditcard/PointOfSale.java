@@ -1,6 +1,6 @@
 package pos_creditcard;
 
-import java.util.ArrayList;
+import java.util.*;
 
 
 public class PointOfSale {
@@ -9,9 +9,18 @@ public class PointOfSale {
   private int idLastSale = 0;
   private final String FILE_NAME = "src/pos/catalog.txt";
 
+  private CashBox cashBox;
+  private ChangeMaker changeMaker;
+
   public PointOfSale() {
     productCatalog = new ProductCatalog(FILE_NAME);
     sales = new ArrayList<>();
+    cashBox = new CashBox();
+    // Esto puede ser RandomChangeMaker() o GreedyChangeMaker()
+    changeMaker = new GreedyChangeMaker();
+
+    System.out.println("cash box initally loaded with");
+    cashBox.printContents();
   }
 
   public int makeNewSale() {
@@ -25,6 +34,7 @@ public class PointOfSale {
     ProductSpecification productSpecification = productCatalog.searchByName(productName);
     Sale sale = searchSaleById(idSale);
     sale.addLineItem(productSpecification, quantity);
+    System.out.println("ordered " + quantity + " " + productName);
   }
 
   private Sale searchSaleById(int id) {
@@ -41,9 +51,10 @@ public class PointOfSale {
     sale.printReceipt();
   }
 
-  public void payOneSaleCash(int saleId, double amountHanded) {
+  // Actualizamos el pago en efectivo
+  public void payOneSaleCash(int saleId, Map<Double, Integer> moneyHanded) {
     Sale sale = searchSaleById(saleId);
-    sale.payCash(amountHanded);
+    sale.payCash(moneyHanded, cashBox, changeMaker);
   }
 
   public void payOneSaleCreditCard(int saleId, String ccnumber) {
