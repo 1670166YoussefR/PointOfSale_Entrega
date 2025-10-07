@@ -42,8 +42,9 @@ public class CashBox {
     }
 
     public void printContents() {
+        System.out.println("cash box initially loaded with");
         contents.forEach((denom, quantity) ->
-                System.out.printf("%d de %.2f€\n", quantity, denom)
+                System.out.printf("%d of %.2f\n", quantity, denom)
         );
         System.out.println();
     }

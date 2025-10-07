@@ -19,7 +19,6 @@ public class PointOfSale {
     // Esto puede ser RandomChangeMaker() o GreedyChangeMaker()
     changeMaker = new GreedyChangeMaker();
 
-    System.out.println("cash box initally loaded with");
     cashBox.printContents();
   }
 

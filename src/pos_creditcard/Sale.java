@@ -74,7 +74,7 @@ public class Sale {
         amountHanded += entry.getValue() * entry.getValue();
     }
 
-    PaymentInCash paymentInCash = new PaymentInCash(amountHanded, totalToPay, cashBox, changeMaker);
+    PaymentInCash paymentInCash = new PaymentInCash(totalToPay, cashBox, changeMaker);
     paymentInCash.processPayment(moneyHanded);
     payment = paymentInCash;
     isPaid = true;
