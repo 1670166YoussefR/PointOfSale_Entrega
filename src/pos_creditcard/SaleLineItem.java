@@ -2,12 +2,14 @@ package pos_creditcard;
 
 public class SaleLineItem {
   ProductSpecification productSpecification;
-  int quantity;
+  private int quantity;
 
   public SaleLineItem(ProductSpecification productSpecification, int quantity) {
     this.productSpecification = productSpecification;
     this.quantity = quantity;
   }
+
+  public int getQuantity() {return quantity;}
 
   public void incrementQuantity(int qty) {
     quantity += qty;

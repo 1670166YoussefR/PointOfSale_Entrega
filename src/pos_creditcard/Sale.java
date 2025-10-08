@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Sale {
-  boolean isPaid = false;
+  private boolean isPaid = false;
   private int id;
   private ArrayList<SaleLineItem> saleLineItems = new ArrayList<>();
   private LocalDateTime dateTime = LocalDateTime.now();
@@ -54,7 +54,7 @@ public class Sale {
     double total = 0.;
     for (SaleLineItem saleLineItem : saleLineItems) {
       String prodName = saleLineItem.productSpecification.getName();
-      int quantity = saleLineItem.quantity; //getQuantity();
+      int quantity = saleLineItem.getQuantity();
       double price = saleLineItem.productSpecification.getPrice();
       double subtotal = quantity * price;
       System.out.printf("%s %d x %.2f = %.2f\n", prodName, quantity, price, subtotal);
@@ -71,7 +71,7 @@ public class Sale {
 
     //Calculamos cuanto dinero ha entregado el cliente
     for (var entry: moneyHanded.entrySet()) {
-        amountHanded += entry.getValue() * entry.getValue();
+        amountHanded += entry.getValue() * entry.getKey();
     }
 
     PaymentInCash paymentInCash = new PaymentInCash(totalToPay, cashBox, changeMaker);
