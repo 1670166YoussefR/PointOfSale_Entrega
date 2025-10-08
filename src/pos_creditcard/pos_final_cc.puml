@@ -7,22 +7,32 @@ class Main {
 }
 
 class PointOfSale {
-- idLastSale : int
-- catalogFileName : String
-+ makeNewSale() : int
-+ addLineItemToSale(idSale : int, \n\tprodName : String, qty : int)
-+ printReceiptOfSale(saleId : int)
-+ payOneSaleCash(saleId : int, amountHanded : double)
-+ payOneSaleCash(saleId : int, ccnumber : String)
-+ printPayment(saleId : int)
-- searchSaleById(int id) : Sale
-}
+    - productCatalog: ProductCatalog
+    - sales: ArrayList<Sale>
+    - idLastSale: int
+    - cashBox: CashBox
+    - changeMaker: ChangeMaker
+    + PointOfSale()
+    + makeNewSale(): int
+    + addLineItemToSale(idSale: int, productName: String, quantity: int): void
+    + printReceiptOfSale(saleId: int): void
+    + payOneSaleCash(saleId: int, moneyHanded: Map<Double,Integer>): void
+    + payOneSaleCreditCard(saleId: int, ccnumber: String): void
+    + printPayment(saleId: int): void
+    + isSalePaid(id: int): boolean
+    + getProductNames(): ArrayList<String>
+    - searchSaleById(int id) : Sale
+  }
 
-class ProductCatalog {
-+ ProductCatalog(fileName : String)
-+ searchByName(name : String) : ProductSpecification
-- addProductSpecification(name : String, price : double)
-}
+
+ class ProductCatalog {
+    - productSpecifications: ArrayList<ProductSpecification>
+    + ProductCatalog(fileName: String)
+    + searchByName(name: String): ProductSpecification
+    + getProductNames(): ArrayList<String>
+    - addProductSpecification(String name, double price): void
+  }
+
 
 note left of ProductCatalog::ProductCatalog {
 text file with
@@ -33,59 +43,98 @@ Moritz    1.90
 }
 
 class ProductSpecification {
-- price : double
-- name : String
+    - name: String
+    - price: double
+    + getName(): String
+    + getPrice(): double
+    + ProductSpecification(String name, double price)
 }
+
 
 class Sale {
-- id : int
-- dateTime : LocalDateTime
-+ Sale(id : int)
-+ addLineItem(prodSpec : ProductSpecification, qty : int)
-+ payCash(amountHanded : double)
-+ payCreditCard(amountToPay : double, ccnumber : String)
-+ printPayment()
-+ total() : double
-+ printReceipt()
-
+    - id: int
+    - isPaid: boolean
+    - dateTime: java.time.LocalDateTime
+    - saleLineItems: ArrayList<SaleLineItem>
+    - payment: Payment
+    + getId(): int
+    + addLineItem(ps: ProductSpecification, quantity: int): void
+    + total(): double
+    + printReceipt(): void
+    + payCash(moneyHanded: Map<Double,Integer>, cashBox: CashBox, changeMaker: ChangeMaker): void
+    + payCreditCard(ccnumber: String): void
+    + printPayment(): void
+    + isPaid(): boolean
 }
+
 
 class SaleLineItem {
-- quantity : int
-+ incrementQuantity()
-+ subtotal() : double
-+ print()
+    - productSpecification: ProductSpecification
+    - quantity: int
+    + SaleLineItem(ProductSpecification productSpecification, int quantity)
+    + incrementQuantity(qty: int): void
+    + subtotal(): double
+    + print(): void
+    + getQuantity(): int
 }
+
 
 abstract class Payment {
   # amountToPay : double
   + Payment(amountToPay : double)
-  + {abstract} pay()
   + {abstract} print()
 }
 
 class PaymentInCash extends Payment {
-  - amount : double
-  + PaymentInCash(amountToPay : double)
-  + print()
-  - change(totalSale : double) : double
+    - cashBox: CashBox
+    - changeMaker: ChangeMaker
+    - moneyHanded: Map<Double,Integer>
+    - changeGiven: Map<Double,Integer>
+    + PaymentInCash(double amountToPay, CashBox cashBox, ChangeMaker changeMaker)
+    + processPayment(moneyHanded: Map<Double,Integer>): void
+    + print(): void
+    + totalHanded():double
 }
-
-Sale --> "0,1" Payment : payment
-
 
 class PaymentCreditCard extends Payment {
-  - ccnumber : String
-  - authorized : boolean  
-  + PaymentCreditCard(ccnumber : int, \n\tamountToPay : double)
-  + print()
-  - authorize() : boolean
+    - ccnumber: String
+    - authorized: boolean
+    - CC_LIMIT: double
+    + PaymentCreditCard(String ccnumber, double amountToPay)
+    + isAuthorized(): boolean
+    + authorize(): boolean
+    + print(): void
 }
 
+interface ChangeMaker {
+    + makeChange(changeAmount: double, cashBox: Map<Double,Integer>): Map<Double,Integer>
+}
+
+class GreedyChangeMaker implements ChangeMaker{
+    # makeChange(changeAmount: double, cashBox: Map<Double,Integer>): Map<Double,Integer>
+}
+
+class RandomChangeMaker implements ChangeMaker{
+    # makeChange(changeAmount: double, cashBox: Map<Double,Integer>): Map<Double,Integer>
+}
+
+class CashBox {
+    - contents: Map<Double,Integer>
+    - CashBox()
+    + getContentsCopy(): Map<Double,Integer>
+    + addMoney(money: Map<Double,Integer>): void
+    + subtractMoney(money: Map<Double,Integer>): void
+    + printContents(): void
+}
+
+
 PointOfSale o--> "*" Sale : sales
+Sale --> "0,1" Payment : payment
 Sale *--> "*" SaleLineItem : saleLineItems
 SaleLineItem --> "1" ProductSpecification : productSpecification
 PointOfSale --> "1" ProductCatalog : productCatalog
 ProductCatalog o--> " * " ProductSpecification : productSpecifications
+PointOfSale *--> CashBox : cashBox
+PaymentInCash ..> ChangeMaker : uses
 
 @enduml
