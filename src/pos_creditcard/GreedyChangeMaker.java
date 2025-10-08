@@ -31,6 +31,7 @@ public class GreedyChangeMaker implements ChangeMaker {
                 used++;
             }
 
+            // Si hemos utilizado alguna moneda/billete, la añadimos al resultado
             if (used > 0) {
                 changeToGive.put(denom, used);
             }
