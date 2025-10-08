@@ -16,9 +16,9 @@ public class CashBox {
         contents.put(0.50, 5);
         contents.put(1.0, 5);
         contents.put(2.0, 5);
-        contents.put(5.0, 5);
-        contents.put(10.0, 5);
-        contents.put(20.0, 5);
+        contents.put(5.0, 2);
+        contents.put(10.0, 2);
+        contents.put(20.0, 2);
     }
 
     public Map<Double, Integer> getContentsCopy() {
