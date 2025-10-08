@@ -2,12 +2,6 @@ package pos_creditcard;
 
 import java.util.*;
 
-
-/**
- * Implementación del algoritmo "greedy" para el cálculo del cambio.
- * Usa primero las monedas/billetes de mayor valor disponibles.
- */
-
 public class GreedyChangeMaker implements ChangeMaker {
 
     @Override

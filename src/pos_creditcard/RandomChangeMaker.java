@@ -2,10 +2,6 @@ package pos_creditcard;
 
 import java.util.*;
 
-/**
- * Implementación aleatoria del cálculo del cambio.
- * Selecciona monedas/billetes al azar hasta completar el importe.
- */
 public class RandomChangeMaker implements ChangeMaker {
 
     private final Random random = new Random();
